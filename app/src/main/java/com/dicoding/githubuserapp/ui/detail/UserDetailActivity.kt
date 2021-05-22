@@ -22,8 +22,6 @@ class UserDetailActivity: AppCompatActivity() {
         const val EXTRA_USER = "extra_user"
     }
 
-    var job : Job?= null
-
     private lateinit var adapter: ViewPagerAdapter
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -36,30 +34,7 @@ class UserDetailActivity: AppCompatActivity() {
         tabLayout()
     }
 
-    fun downloadDetail (username : String) {
-        job?.cancel()
-        val url = "https://api.github.com/users/$username"
-        job = util.download(this, url) {
-            try {
-                val jsonObject = JSONObject(it)
-                val username: String = jsonObject.getString("login")
-                val avatar: String = jsonObject.getString("avatar_url")
-                val name: String = jsonObject.getString("name")
-                val company: String = jsonObject.getString("company")
-                val location: String = jsonObject.getString("location")
-                val repository: String = jsonObject.getString("public_repos")
-                val followers: String = jsonObject.getString("followers")
-                val following: String = jsonObject.getString("following")
-                callBack(User(avatar, name, username, company, location, repository, followers, following))
-            } catch (e: Exception) {
-                Toast.makeText(this, e.message, Toast.LENGTH_SHORT)
-                        .show()
-                e.printStackTrace()
-            }
-        }
-    }
-
-    fun callBack (user : User){
+    fun callBack(user: User) {
         val name: TextView = findViewById(R.id.tv_set_name)
         val userName: TextView = findViewById(R.id.tv_set_user_name)
         val location: TextView = findViewById(R.id.tv_set_location)
@@ -77,13 +52,13 @@ class UserDetailActivity: AppCompatActivity() {
         followers.text = "${user.followers} followers"
         following.text = "${user.following} following"
         Glide.with(this)
-            .load(user.avatar)
-            .apply(RequestOptions())
-            .into(avatar)
+                .load(user.avatar)
+                .apply(RequestOptions())
+                .into(avatar)
     }
 
     fun tabLayout () {
-        val user  = intent.getSerializableExtra(EXTRA_USER) as UserItem
+        val user  = intent.getSerializableExtra(UserDetailActivity.EXTRA_USER) as UserItem
         adapter = ViewPagerAdapter(this, user.username)
         val vp = findViewById<ViewPager2>(R.id.view_pager)
         val tabs = findViewById<TabLayout>(R.id.tab_layout)
@@ -93,4 +68,6 @@ class UserDetailActivity: AppCompatActivity() {
             tab.text = (vpTitles[pos])
         }.attach()
     }
+
+
 }
