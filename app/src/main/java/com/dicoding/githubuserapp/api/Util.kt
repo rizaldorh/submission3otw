@@ -1,8 +1,8 @@
 package com.dicoding.githubuserapp.api
 
-import android.content.Context
 import android.util.Log
 import android.widget.Toast
+import com.dicoding.githubuserapp.ui.detail.UserDetailViewModel
 import com.loopj.android.http.AsyncHttpClient
 import com.loopj.android.http.AsyncHttpResponseHandler
 import cz.msebera.android.httpclient.Header
@@ -10,11 +10,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
-import org.jetbrains.anko.runOnUiThread
 
 object util {
 
-    fun download(c : Context, url : String, response: (String) -> Unit) : Job = GlobalScope.launch(Dispatchers.IO) {
+    fun download(c: UserDetailViewModel, url: String, response: (String) -> Unit) : Job = GlobalScope.launch(Dispatchers.IO) {
         val client = AsyncHttpClient()
         client.addHeader("User-Agent", "Mozilla/5.0")
         client.addHeader("Authorization", "token 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")

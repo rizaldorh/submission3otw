@@ -4,8 +4,10 @@ import android.os.Bundle
 import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager2.widget.ViewPager2
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.RequestOptions
 import com.dicoding.githubuserapp.R
 import com.dicoding.githubuserapp.api.util
@@ -23,6 +25,7 @@ class UserDetailActivity: AppCompatActivity() {
     }
 
     private lateinit var adapter: ViewPagerAdapter
+    private lateinit var viewModel: UserDetailViewModel
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,31 +34,40 @@ class UserDetailActivity: AppCompatActivity() {
         val user  = intent.getSerializableExtra(EXTRA_USER) as UserItem
         downloadDetail(user.username)
 
+        viewModel = ViewModelProvider(this).get(UserDetailViewModel::class.java)
+
+        viewModel.downloadDetail(user)
+        viewModel.getUserDetail().observe(this, {
+            if (it != null) {
+                fun callBack(user: User) {
+                    val name: TextView = findViewById(R.id.tv_set_name)
+                    val userName: TextView = findViewById(R.id.tv_set_user_name)
+                    val location: TextView = findViewById(R.id.tv_set_location)
+                    val repository: TextView = findViewById(R.id.tv_set_repository)
+                    val company: TextView = findViewById(R.id.tv_set_company)
+                    val followers: TextView = findViewById(R.id.tv_set_followers)
+                    val following: TextView = findViewById(R.id.tv_set_following)
+                    val avatar: CircleImageView = findViewById(R.id.img_item_photo)
+
+                    name.text = user.name
+                    userName.text = "Username: ${user.username}"
+                    location.text = "Location: ${user.location}"
+                    repository.text = "Repository: ${user.repository}"
+                    company.text = "Company: ${user.company}"
+                    followers.text = "${user.followers} followers"
+                    following.text = "${user.following} following"
+                    Glide.with(this)
+                            .load(user.avatar)
+                            .apply(RequestOptions())
+                            .into(avatar)
+                }
+            }
+        })
+
         tabLayout()
     }
 
-    fun callBack(user: User) {
-        val name: TextView = findViewById(R.id.tv_set_name)
-        val userName: TextView = findViewById(R.id.tv_set_user_name)
-        val location: TextView = findViewById(R.id.tv_set_location)
-        val repository: TextView = findViewById(R.id.tv_set_repository)
-        val company: TextView = findViewById(R.id.tv_set_company)
-        val followers: TextView = findViewById(R.id.tv_set_followers)
-        val following: TextView = findViewById(R.id.tv_set_following)
-        val avatar: CircleImageView = findViewById(R.id.img_item_photo)
 
-        name.text = user.name
-        userName.text = "Username: ${user.username}"
-        location.text = "Location: ${user.location}"
-        repository.text = "Repository: ${user.repository}"
-        company.text = "Company: ${user.company}"
-        followers.text = "${user.followers} followers"
-        following.text = "${user.following} following"
-        Glide.with(this)
-                .load(user.avatar)
-                .apply(RequestOptions())
-                .into(avatar)
-    }
 
     fun tabLayout () {
         val user  = intent.getSerializableExtra(UserDetailActivity.EXTRA_USER) as UserItem
@@ -68,6 +80,5 @@ class UserDetailActivity: AppCompatActivity() {
             tab.text = (vpTitles[pos])
         }.attach()
     }
-
 
 }
