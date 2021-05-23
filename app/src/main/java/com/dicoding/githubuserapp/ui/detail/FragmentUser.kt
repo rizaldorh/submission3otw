@@ -45,12 +45,12 @@ class FragmentUser : Fragment() {
     }
 
     fun getFollower(username : String) {
-        val pb = view!!.findViewById<ProgressBar>(R.id.loading)
+        val pb = requireView().findViewById<ProgressBar>(R.id.loading)
         pb.visibility = View.VISIBLE
         val end = if(isFollower) "followers" else "following"
         val url = "https://api.github.com/users/$username/$end"
         job?.cancel()
-        job = util.download(requireContext(), url) {
+        job = util.download(UserDetailViewModel(), url) {
             try {
                 val list = arrayListOf<UserItem>()
                 val jsonArray = JSONArray(it)

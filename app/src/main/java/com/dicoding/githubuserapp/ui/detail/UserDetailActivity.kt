@@ -2,22 +2,17 @@ package com.dicoding.githubuserapp.ui.detail
 
 import android.os.Bundle
 import android.widget.TextView
-import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProvider
 import androidx.viewpager2.widget.ViewPager2
 import com.bumptech.glide.Glide
-import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import com.bumptech.glide.request.RequestOptions
 import com.dicoding.githubuserapp.R
-import com.dicoding.githubuserapp.api.util
 import com.dicoding.githubuserapp.data.model.User
 import com.dicoding.githubuserapp.data.model.UserItem
 import com.google.android.material.tabs.TabLayout
 import com.google.android.material.tabs.TabLayoutMediator
 import de.hdodenhof.circleimageview.CircleImageView
-import kotlinx.coroutines.Job
-import org.json.JSONObject
 
 class UserDetailActivity: AppCompatActivity() {
     companion object {
@@ -31,12 +26,11 @@ class UserDetailActivity: AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_detail_user)
 
-        val user  = intent.getSerializableExtra(EXTRA_USER) as UserItem
-        downloadDetail(user.username)
+        val user  = intent.getSerializableExtra(EXTRA_USER)
 
         viewModel = ViewModelProvider(this).get(UserDetailViewModel::class.java)
 
-        viewModel.downloadDetail(user)
+        viewModel.downloadDetail(user as String)
         viewModel.getUserDetail().observe(this, {
             if (it != null) {
                 fun callBack(user: User) {

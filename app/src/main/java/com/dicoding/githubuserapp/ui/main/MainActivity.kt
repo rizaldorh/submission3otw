@@ -12,6 +12,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.dicoding.githubuserapp.R
 import com.dicoding.githubuserapp.api.util
 import com.dicoding.githubuserapp.data.model.UserItem
+import com.dicoding.githubuserapp.ui.detail.UserDetailViewModel
 import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -56,7 +57,7 @@ class MainActivity : AppCompatActivity() {
         val pb = findViewById<ProgressBar>(R.id.loading)
         runOnUiThread {pb.visibility = View.VISIBLE  }
         val url = "https://api.github.com/search/users?q=$username"
-        job = util.download(this, url) {
+        job = util.download(UserDetailViewModel(), url) {
             try {
                 val list = arrayListOf<UserItem>()
                 val jsonObject = JSONObject(it)
@@ -82,7 +83,7 @@ class MainActivity : AppCompatActivity() {
         val pb = findViewById<ProgressBar>(R.id.loading)
         pb.visibility = View.VISIBLE
         val url = "https://api.github.com/users"
-        job = util.download(this, url) {
+        job = util.download(UserDetailViewModel(), url) {
             try {
                 val list = arrayListOf<UserItem>()
                 val jsonArray = JSONArray(it)
